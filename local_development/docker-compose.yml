@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  database:
+    image: library/postgres:15
+    container_name: PostgresCont
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: VorobeiEI25121988
+      POSTGRES_DB: accommodations-booking-api-db
+    ports:
+      - 54321:5432
