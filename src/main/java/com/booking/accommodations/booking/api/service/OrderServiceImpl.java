@@ -15,6 +15,7 @@ import com.booking.accommodations.booking.api.tasks.ordercancellation.OrderCance
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -40,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
         this.orderRepository = orderRepository;
     }
 
+    @Transactional
     @Override
     public OrderDto createOrder(OrderRequest orderRequest) {
         Unit unit = unitService.findById(orderRequest.getUnitId());
@@ -54,6 +56,7 @@ public class OrderServiceImpl implements OrderService {
         return toDto(orderRepository.save(order));
     }
 
+    @Transactional
     @Override
     public OrderDto confirmOrder(UUID orderId, OrderConfirmationRequest confirmationRequest) {
         PaymentDto paymentDto = paymentService.createPayment(confirmationRequest);
@@ -70,6 +73,7 @@ public class OrderServiceImpl implements OrderService {
         return toDto(orderRepository.save(orderToBeConfirmed));
     }
 
+    @Transactional
     @Override
     public OrderDto cancelOrder(UUID orderId, String reason) {
         Order orderToCancel = orderRepository.findById(orderId)
