@@ -51,52 +51,50 @@ public class AccommodationController {
     @PostMapping(value = "/unit")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "basicAuth")
-    public ResponseEntity addUnit(@Valid @RequestBody UnitDto unit) {
-        unitService.addUnit(unit);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<List<UnitDto>> addUnit(@Valid @RequestBody UnitDto unit) {
+        return new ResponseEntity<>(unitService.addUnit(unit), HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/units")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "basicAuth")
-    public ResponseEntity addUnits(@RequestBody List<UnitDto> units) {
-        unitService.addUnits(units);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<List<UnitDto>> addUnits(@RequestBody List<UnitDto> units) {
+        return new ResponseEntity<>(unitService.addUnits(units), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/unit/{unitId}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "basicAuth")
-    public UnitDto updateUnit(@PathVariable String unitId, @RequestBody UnitDto unitDto) {
-        return unitService.updateUnit(unitId, unitDto);
+    public ResponseEntity<UnitDto> updateUnit(@PathVariable String unitId, @RequestBody UnitDto unitDto) {
+        return ResponseEntity.ok(unitService.updateUnit(unitId, unitDto));
     }
 
     @GetMapping(value = "/offers")
-    public List<OfferDto> search(@Valid SearchRequest searchRequest,
-                                 @RequestParam(required = false, defaultValue = "0") int page,
-                                 @RequestParam(required = false, defaultValue = "10")
-                                 @Max(value = 1000, message = "Max page-size value is 1000") int pageSize) {
-        return offerService.searchForOffers(searchRequest, page, pageSize);
+    public ResponseEntity<List<OfferDto>> search(@Valid SearchRequest searchRequest,
+                                                 @RequestParam(required = false, defaultValue = "0") int page,
+                                                 @RequestParam(required = false, defaultValue = "10")
+                                                 @Max(value = 1000, message = "Max page-size value is 1000") int pageSize) {
+        return ResponseEntity.ok(offerService.searchForOffers(searchRequest, page, pageSize));
     }
 
     @PostMapping(value = "/order")
-    public OrderDto createOrder(@RequestBody @Valid OrderRequest orderRequest) {
-        return orderService.createOrder(orderRequest);
+    public ResponseEntity<OrderDto> createOrder(@RequestBody @Valid OrderRequest orderRequest) {
+        return new ResponseEntity<>(orderService.createOrder(orderRequest), HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/order/{orderId}/confirm")
-    public OrderDto confirmOrder(@PathVariable UUID orderId, @RequestBody @Valid OrderConfirmationRequest confirmationRequest) {
-        return orderService.confirmOrder(orderId, confirmationRequest);
+    public ResponseEntity<OrderDto> confirmOrder(@PathVariable UUID orderId, @RequestBody @Valid OrderConfirmationRequest confirmationRequest) {
+        return ResponseEntity.ok(orderService.confirmOrder(orderId, confirmationRequest));
     }
 
     @PostMapping("/order/{orderId}/cancel")
-    public OrderDto cancelBooking(@PathVariable UUID orderId, @RequestBody CancellationRequest cancellationRequest) {
-        return orderService.cancelOrder(orderId, cancellationRequest.reason());
+    public ResponseEntity<OrderDto> cancelBooking(@PathVariable UUID orderId, @RequestBody CancellationRequest cancellationRequest) {
+        return ResponseEntity.ok(orderService.cancelOrder(orderId, cancellationRequest.reason()));
     }
 
     @GetMapping(value = "/unit/statistics")
-    public Integer getAmountOfUnitsAvailableForBooking() {
-        return unitService.getAmountOfUnitsAvailableForBooking();
+    public ResponseEntity<Integer> getAmountOfUnitsAvailableForBooking() {
+        return ResponseEntity.ok(unitService.getAmountOfUnitsAvailableForBooking());
     }
 
 }

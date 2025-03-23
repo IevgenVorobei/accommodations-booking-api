@@ -27,26 +27,26 @@ public class UnitServiceImpl implements UnitService {
 
     @Override
     @CacheEvict(cacheNames = "amountOfUnitsAvailableForBookingCache", allEntries = true)
-    public void addUnit(UnitDto unitDto) {
-        saveUnits(List.of(Unit.builder()
-                              .floor(unitDto.floor())
-                              .numOfRooms(unitDto.numOfRooms())
-                              .accommodationType(unitDto.accommodationType())
-                              .description(unitDto.description())
-                              .pricePerNight(unitDto.pricePerNight())
-                              .build()));
+    public List<UnitDto> addUnit(UnitDto unitDto) {
+        return saveUnits(List.of(Unit.builder()
+                                     .floor(unitDto.floor())
+                                     .numOfRooms(unitDto.numOfRooms())
+                                     .accommodationType(unitDto.accommodationType())
+                                     .description(unitDto.description())
+                                     .pricePerNight(unitDto.pricePerNight())
+                                     .build())).stream().map(this::toDto).toList();
     }
 
     @Override
     @CacheEvict(cacheNames = "amountOfUnitsAvailableForBookingCache", allEntries = true)
-    public void addUnits(List<UnitDto> units) {
-        saveUnits(units.stream().map(dto -> Unit.builder()
-                                                .accommodationType(dto.accommodationType())
-                                                .floor(dto.floor())
-                                                .numOfRooms(dto.numOfRooms())
-                                                .description(dto.description())
-                                                .pricePerNight(dto.pricePerNight())
-                                                .build()).toList());
+    public List<UnitDto> addUnits(List<UnitDto> units) {
+        return saveUnits(units.stream().map(dto -> Unit.builder()
+                                                       .accommodationType(dto.accommodationType())
+                                                       .floor(dto.floor())
+                                                       .numOfRooms(dto.numOfRooms())
+                                                       .description(dto.description())
+                                                       .pricePerNight(dto.pricePerNight())
+                                                       .build()).toList()).stream().map(this::toDto).toList();
     }
 
     @Override
@@ -89,8 +89,8 @@ public class UnitServiceImpl implements UnitService {
         return unitRepository.getAmountOfUnitsAvailableForBooking();
     }
 
-    private void saveUnits(List<Unit> units) {
-        unitRepository.saveAll(units);
+    private List<Unit> saveUnits(List<Unit> units) {
+        return unitRepository.saveAll(units);
     }
 
     private UnitDto toDto(Unit unit) {

@@ -9,9 +9,9 @@ import java.util.UUID;
 
 public interface UnitService {
 
-    void addUnit(UnitDto unit);
+    List<UnitDto> addUnit(UnitDto unit);
 
-    void addUnits(List<UnitDto> units);
+    List<UnitDto> addUnits(List<UnitDto> units);
 
     Unit findById(UUID unitId);
 
